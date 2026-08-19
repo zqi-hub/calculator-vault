@@ -1,0 +1,101 @@
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #000; }
+.hidden { display: none !important; }
+.screen { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+
+/* ================= 计算器 ================= */
+#screen-calc { background: #000; user-select: none; }
+.calc { display: flex; flex-direction: column; height: 100%; max-width: 520px; margin: 0 auto; width: 100%; }
+.calc-display { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding: 16px 24px; overflow: hidden; }
+.calc-history { color: #8e8e93; font-size: 20px; min-height: 28px; word-break: break-all; }
+.calc-expr { color: #fff; font-size: 64px; font-weight: 300; word-break: break-all; text-align: right; line-height: 1.1; }
+.calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 12px 16px 24px; }
+.key { aspect-ratio: 1; border: none; border-radius: 50%; font-size: 28px; background: #333; color: #fff; cursor: pointer; transition: filter .1s; }
+.key:active { filter: brightness(1.6); }
+.key.fn { background: #a5a5a5; color: #000; }
+.key.op, .key.eq { background: #ff9f0a; color: #fff; font-size: 32px; }
+.key.eq { font-weight: 600; }
+
+/* ================= 隐藏空间通用 ================= */
+#screen-vault { background: #f2f2f7; color: #1c1c1e; }
+.vault-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #fff; border-bottom: 1px solid #e0e0e5; }
+.vault-title { font-size: 18px; font-weight: 600; }
+.btn-lock { border: none; background: #ff3b30; color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+.vault-tabs { display: flex; overflow-x: auto; background: #fff; border-bottom: 1px solid #e0e0e5; }
+.tab { flex: 1; white-space: nowrap; border: none; background: none; padding: 12px 10px; font-size: 15px; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
+.tab.active { color: #007aff; border-bottom-color: #007aff; font-weight: 600; }
+.vault-main { flex: 1; overflow-y: auto; padding: 14px; }
+.pane { display: none; }
+.pane.active { display: block; }
+
+.btn { border: 1px solid #d1d1d6; background: #fff; color: #1c1c1e; padding: 9px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+.btn.primary { background: #007aff; border-color: #007aff; color: #fff; }
+.btn.danger { background: #ff3b30; border-color: #ff3b30; color: #fff; }
+.btn.small { padding: 5px 10px; font-size: 13px; }
+.muted { color: #8e8e93; font-size: 13px; line-height: 1.5; }
+
+/* 文件面板 */
+.pane-toolbar { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
+.file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+.file-grid.doc-mode { grid-template-columns: 1fr; }
+.file-card { background: #fff; border-radius: 10px; overflow: hidden; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.file-thumb { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #e5e5ea; }
+.file-thumb.icon-mode { display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.file-card .fname { font-size: 11px; padding: 6px; color: #48484a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-del { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; border: none; background: rgba(0,0,0,.55); color: #fff; cursor: pointer; font-size: 13px; }
+.doc-row { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.doc-row .dicon { font-size: 26px; }
+.doc-row .dname { flex: 1; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.doc-row .dsize { font-size: 12px; color: #8e8e93; }
+.empty-tip { text-align: center; color: #8e8e93; padding: 40px 0; font-size: 14px; }
+
+/* 笔记 */
+.note-list .note-item { background: #fff; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.08); cursor: pointer; }
+.note-item .ntitle { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+.note-item .npreview { font-size: 13px; color: #666; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.note-item .ndate { font-size: 11px; color: #aeaeb2; margin-top: 4px; }
+
+/* 弹窗 */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+.modal-box { background: #fff; border-radius: 14px; padding: 18px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; }
+.modal-box h3 { font-size: 17px; }
+.modal-box input, .modal-box textarea, .settings-card input { border: 1px solid #d1d1d6; border-radius: 8px; padding: 10px; font-size: 15px; width: 100%; font-family: inherit; }
+.modal-box textarea { min-height: 160px; resize: vertical; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.preview-box { max-width: 640px; }
+.preview-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+#preview-name { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.preview-body { display: flex; justify-content: center; align-items: center; overflow: auto; }
+.preview-body img, .preview-body video { max-width: 100%; max-height: 65vh; border-radius: 8px; }
+.preview-body audio { width: 100%; }
+
+/* 聊天 */
+.chat-card, .settings-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.08); display: flex; flex-direction: column; gap: 10px; }
+.chat-card h3, .settings-card h3 { font-size: 16px; }
+.chat-setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) { .chat-setup-grid { grid-template-columns: 1fr; } }
+.chat-col { display: flex; flex-direction: column; gap: 8px; }
+.chat-col h4 { font-size: 14px; color: #48484a; }
+.chat-col input { border: 1px solid #d1d1d6; border-radius: 8px; padding: 10px; font-size: 14px; width: 100%; }
+.chat-col textarea { min-height: 70px; font-size: 12px; resize: vertical; border: 1px solid #d1d1d6; border-radius: 8px; padding: 8px; font-family: monospace; }
+.invite-words { font-size: 20px; font-weight: 700; color: #007aff; background: #f0f7ff; border: 1px dashed #007aff; border-radius: 10px; padding: 14px 10px; text-align: center; word-spacing: 8px; letter-spacing: 1px; user-select: all; }
+.manual-details { font-size: 13px; color: #666; border-top: 1px dashed #e0e0e5; padding-top: 8px; }
+.manual-details summary { cursor: pointer; padding: 4px 0; }
+.manual-details .chat-setup-grid { margin-top: 10px; }
+.chat-status { font-size: 13px; color: #ff9f0a; font-weight: 600; }
+.chat-status.ok { color: #34c759; }
+#chat-room { display: flex; flex-direction: column; height: calc(100vh - 150px); background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.chat-room-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid #e5e5ea; font-size: 13px; color: #34c759; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: #f7f7fa; }
+.msg { max-width: 75%; padding: 9px 12px; border-radius: 14px; font-size: 15px; word-break: break-word; position: relative; }
+.msg.me { align-self: flex-end; background: #007aff; color: #fff; border-bottom-right-radius: 4px; }
+.msg.peer { align-self: flex-start; background: #e5e5ea; color: #1c1c1e; border-bottom-left-radius: 4px; }
+.msg.burn { outline: 2px dashed #ff9f0a; outline-offset: 2px; }
+.msg .ttl-badge { display: block; font-size: 11px; opacity: .85; margin-top: 4px; }
+.msg.system-note { align-self: center; background: none; color: #8e8e93; font-size: 12px; padding: 2px; }
+.chat-inputbar { display: flex; gap: 8px; padding: 10px; border-top: 1px solid #e5e5ea; }
+.chat-inputbar select { border: 1px solid #d1d1d6; border-radius: 8px; font-size: 13px; padding: 0 6px; background: #fff; }
+.chat-inputbar input { flex: 1; border: 1px solid #d1d1d6; border-radius: 8px; padding: 9px 12px; font-size: 15px; }
+.form-msg { font-size: 13px; min-height: 18px; }
+.form-msg.ok { color: #34c759; }
+.form-msg.err { color: #ff3b30; }
